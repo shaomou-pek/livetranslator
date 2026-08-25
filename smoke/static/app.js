@@ -1,8 +1,16 @@
 const $ = (selector) => document.querySelector(selector);
 
+function createParticipantId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  const randomPart = globalThis.crypto?.getRandomValues
+    ? Array.from(globalThis.crypto.getRandomValues(new Uint32Array(2)), (value) => value.toString(36)).join("")
+    : Math.random().toString(36).slice(2);
+  return `device-${Date.now().toString(36)}-${randomPart}`;
+}
+
 const state = {
   roomCode: location.pathname.startsWith("/room/") ? location.pathname.split("/")[2]?.toUpperCase() : null,
-  participantId: localStorage.getItem("lt-lab-participant") || crypto.randomUUID(),
+  participantId: localStorage.getItem("lt-lab-participant") || createParticipantId(),
   speakerName: "Guest",
   sourceLanguage: "zh",
   websocket: null,
@@ -237,7 +245,19 @@ $("#recordButton").addEventListener("click", async () => {
 
 $("#demoButton").addEventListener("click", sendDemo);
 $("#copyLinkButton").addEventListener("click", async () => {
-  await navigator.clipboard.writeText(`${location.origin}/room/${state.roomCode}`);
+  const joinUrl = `${location.origin}/room/${state.roomCode}`;
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(joinUrl);
+  } else {
+    const input = document.createElement("textarea");
+    input.value = joinUrl;
+    input.style.position = "fixed";
+    input.style.opacity = "0";
+    document.body.append(input);
+    input.select();
+    document.execCommand("copy");
+    input.remove();
+  }
   showToast("加入链接已复制");
 });
 
