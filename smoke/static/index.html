@@ -14,37 +14,40 @@
           <span class="brand-mark">LT</span>
           <span>
             <strong>LiveTranslator</strong>
-            <small>local test lab</small>
+            <small data-i18n="brand.subtitle">local test lab</small>
           </span>
         </a>
-        <span class="lab-pill">LOCAL SMOKE TEST</span>
+        <div class="topbar-actions">
+          <span class="lab-pill" data-i18n="brand.lab">LOCAL SMOKE TEST</span>
+          <button id="uiLanguageToggle" class="language-toggle" type="button" aria-label="Switch interface language">EN</button>
+        </div>
       </header>
 
       <main>
         <section id="landingView" class="landing-grid hidden">
           <div class="hero-copy">
-            <p class="eyebrow">BILINGUAL DISCUSSION ROOMS</p>
-            <h1>扫码加入，开口说话，双语内容同步出现。</h1>
-            <p class="hero-subtitle">
+            <p class="eyebrow" data-i18n="landing.eyebrow">BILINGUAL DISCUSSION ROOMS</p>
+            <h1 data-i18n="landing.title">扫码加入，开口说话，双语内容同步出现。</h1>
+            <p class="hero-subtitle" data-i18n="landing.subtitle">
               无需安装。创建一个临时房间，用第二个浏览器或手机加入，测试中文与英文的语音转写和翻译。
             </p>
             <div class="flow-strip" aria-label="测试流程">
-              <span>创建房间</span><i></i><span>扫码加入</span><i></i><span>点击发言</span><i></i><span>同步字幕</span>
+              <span data-i18n="landing.flowCreate">创建房间</span><i></i><span data-i18n="landing.flowScan">扫码加入</span><i></i><span data-i18n="landing.flowSpeak">点击发言</span><i></i><span data-i18n="landing.flowSync">同步字幕</span>
             </div>
           </div>
 
           <div class="action-card">
             <form id="createRoomForm">
-              <label for="roomTitle">会议名称</label>
+              <label for="roomTitle" data-i18n="landing.roomName">会议名称</label>
               <input id="roomTitle" name="title" maxlength="80" value="中英双语讨论" required />
-              <button class="primary-button" type="submit">创建测试房间</button>
+              <button class="primary-button" type="submit" data-i18n="landing.create">创建测试房间</button>
             </form>
-            <div class="separator"><span>或</span></div>
+            <div class="separator"><span data-i18n="common.or">或</span></div>
             <form id="joinCodeForm" class="join-form">
-              <label for="joinCode">输入房间码</label>
+              <label for="joinCode" data-i18n="landing.enterCode">输入房间码</label>
               <div class="inline-input">
                 <input id="joinCode" maxlength="6" autocomplete="off" placeholder="A1B2C3" />
-                <button type="submit" class="secondary-button">加入</button>
+                <button type="submit" class="secondary-button" data-i18n="common.join">加入</button>
               </div>
             </form>
           </div>
@@ -53,25 +56,25 @@
         <section id="roomView" class="room-layout hidden">
           <aside class="room-sidebar">
             <div class="room-heading">
-              <p class="eyebrow">LIVE ROOM</p>
+              <p class="eyebrow" data-i18n="room.eyebrow">LIVE ROOM</p>
               <h1 id="roomName">会议室</h1>
               <div class="room-code-line">
-                <span>房间码</span>
+                <span data-i18n="room.code">房间码</span>
                 <strong id="roomCode">------</strong>
               </div>
             </div>
 
             <div class="qr-card">
               <img id="roomQr" alt="加入会议室二维码" />
-              <p>用另一个浏览器扫码或打开加入链接</p>
-              <button id="copyLinkButton" class="text-button" type="button">复制加入链接</button>
+              <p data-i18n="room.scanHelp">用另一个浏览器扫码或打开加入链接</p>
+              <button id="copyLinkButton" class="text-button" type="button" data-i18n="room.copyLink">复制加入链接</button>
             </div>
 
             <div class="connection-card">
               <span id="connectionDot" class="status-dot"></span>
               <div>
-                <strong id="connectionLabel">等待加入</strong>
-                <small><span id="onlineCount">0</span> 个页面在线</small>
+                <strong id="connectionLabel" data-i18n="room.waiting">等待加入</strong>
+                <small><span id="onlineCount">0</span> <span data-i18n="room.onlineSuffix">个页面在线</span></small>
               </div>
             </div>
           </aside>
@@ -79,30 +82,30 @@
           <div class="conversation-panel">
             <div id="profilePanel" class="profile-panel">
               <div>
-                <p class="eyebrow">JOIN THE ROOM</p>
-                <h2>先设置你的发言身份</h2>
+                <p class="eyebrow" data-i18n="profile.eyebrow">JOIN THE ROOM</p>
+                <h2 data-i18n="profile.title">先设置你的发言身份</h2>
               </div>
               <form id="profileForm" class="profile-form">
                 <label>
-                  昵称
+                  <span data-i18n="profile.name">昵称</span>
                   <input id="speakerName" value="Guest" maxlength="32" required />
                 </label>
                 <label>
-                  主要发言语言（系统会自动校正）
+                  <span data-i18n="profile.language">主要发言语言（系统会自动校正）</span>
                   <select id="speakerLanguage">
-                    <option value="zh">中文 → English</option>
-                    <option value="en">English → 中文</option>
+                    <option value="zh" data-i18n="profile.zhDirection">中文 → English</option>
+                    <option value="en" data-i18n="profile.enDirection">English → 中文</option>
                   </select>
                 </label>
-                <button class="primary-button" type="submit">进入会议室</button>
+                <button class="primary-button" type="submit" data-i18n="profile.enter">进入会议室</button>
               </form>
             </div>
 
             <div id="sessionPanel" class="session-panel hidden">
               <div class="conversation-header">
                 <div>
-                  <p class="eyebrow">LIVE TRANSCRIPT</p>
-                  <h2>双语会议记录</h2>
+                  <p class="eyebrow" data-i18n="conversation.eyebrow">LIVE TRANSCRIPT</p>
+                  <h2 data-i18n="conversation.title">双语会议记录</h2>
                 </div>
                 <div class="identity-chip">
                   <span id="identityName">Guest</span>
@@ -113,31 +116,24 @@
               <div id="messageList" class="message-list" aria-live="polite">
                 <div id="emptyState" class="empty-state">
                   <div class="empty-icon">“ ”</div>
-                  <strong>还没有发言</strong>
-                  <p>点击下方按钮开始录音，停止后会自动生成原文和译文。</p>
+                  <strong data-i18n="conversation.emptyTitle">还没有发言</strong>
+                  <p data-i18n="conversation.emptyBody">点击下方按钮开始录音，停止后会自动生成原文和译文。</p>
                 </div>
               </div>
 
               <div class="composer">
-                <div id="recordStatus" class="record-status">准备就绪</div>
+                <div id="recordStatus" class="record-status" data-i18n="status.ready">准备就绪</div>
                 <div id="httpsWarning" class="https-warning hidden">
-                  <strong>直接发言需要 HTTPS</strong>
-                  <span>当前地址不能安全调用麦克风。请使用 HTTPS 测试地址，或使用“上传录音文件”。</span>
+                  <strong data-i18n="warning.title">直接发言需要 HTTPS</strong>
+                  <span data-i18n="warning.body">当前地址不能安全调用麦克风，请使用 HTTPS 测试地址。</span>
                 </div>
                 <div class="composer-actions">
                   <button id="recordButton" type="button" class="record-button">
                     <span class="record-symbol"></span>
-                    <span id="recordButtonLabel">开始发言</span>
-                  </button>
-                  <input id="audioFileInput" class="native-audio-input" type="file" accept="audio/*" />
-                  <button id="uploadAudioButton" type="button" class="secondary-button demo-button">
-                    上传录音文件
-                  </button>
-                  <button id="demoButton" type="button" class="secondary-button demo-button">
-                    发送英文示例音频
+                    <span id="recordButtonLabel" data-i18n="action.start">开始发言</span>
                   </button>
                 </div>
-                <p class="privacy-note">直接录音只在 HTTPS 或 localhost 可用；测试模式不持久化保存原始音频。</p>
+                <p class="privacy-note" data-i18n="conversation.privacy">直接录音只在 HTTPS 或 localhost 可用；测试模式不持久化保存原始音频。</p>
               </div>
             </div>
           </div>
@@ -146,6 +142,6 @@
     </div>
 
     <div id="toast" class="toast hidden" role="status"></div>
-    <script src="/assets/app.js?v=4" defer></script>
+    <script src="/assets/app.js?v=5" defer></script>
   </body>
 </html>

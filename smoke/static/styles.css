@@ -50,6 +50,19 @@ button { cursor: pointer; }
 .brand strong, .brand small { display: block; }
 .brand small { margin-top: 2px; color: var(--muted); font-size: 11px; letter-spacing: .08em; }
 .lab-pill { padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; letter-spacing: .12em; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.language-toggle {
+  min-width: 46px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--white);
+  font-size: 12px;
+  font-weight: 850;
+}
+.language-toggle:hover { border-color: var(--green); color: var(--green); }
 
 main { min-height: calc(100vh - 82px); }
 .landing-grid { min-height: calc(100vh - 82px); display: grid; grid-template-columns: 1.35fr .65fr; gap: 7vw; align-items: center; padding: 7vw; }
@@ -124,14 +137,6 @@ input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rg
 .record-button:disabled { cursor: not-allowed; color: rgba(255,255,255,.8); background: #7f8a84; transform: none; }
 .record-symbol { display: inline-block; width: 10px; height: 10px; margin-right: 10px; border-radius: 50%; background: var(--orange); }
 .recording .record-symbol { border-radius: 2px; background: white; animation: pulse 1s infinite; }
-.demo-button { min-height: 48px; }
-.native-audio-input {
-  position: fixed;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
 .https-warning {
   display: grid;
   gap: 3px;
@@ -172,5 +177,5 @@ input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rg
   .conversation-header { align-items: flex-start; }
   .conversation-header h2 { font-size: 27px; }
   .composer-actions { flex-direction: column; }
-  .record-button, .demo-button { width: 100%; }
+  .record-button { width: 100%; }
 }

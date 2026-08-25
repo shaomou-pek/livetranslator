@@ -76,9 +76,11 @@ def test_room_page_is_available_for_qr_join_flow():
     assert response.status_code == 200
     assert "LiveTranslator Lab" in response.text
     assert "开始发言" in response.text
-    assert "上传录音文件" in response.text
     assert 'id="httpsWarning"' in response.text
-    assert 'id="audioFileInput"' in response.text
+    assert 'id="uiLanguageToggle"' in response.text
+    assert 'data-i18n="landing.title"' in response.text
+    assert "上传录音文件" not in response.text
+    assert "发送英文示例音频" not in response.text
 
 
 def test_transcript_script_can_correct_the_preferred_language():
