@@ -121,6 +121,7 @@ input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rg
 .composer-actions { display: flex; justify-content: center; gap: 12px; }
 .record-button { min-width: 210px; padding: 0 24px; color: white; background: var(--green); }
 .record-button.recording { background: #ae3d2e; }
+.record-button:disabled { cursor: not-allowed; color: rgba(255,255,255,.8); background: #7f8a84; transform: none; }
 .record-symbol { display: inline-block; width: 10px; height: 10px; margin-right: 10px; border-radius: 50%; background: var(--orange); }
 .recording .record-symbol { border-radius: 2px; background: white; animation: pulse 1s infinite; }
 .demo-button { min-height: 48px; }
@@ -130,6 +131,20 @@ input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rg
   height: 1px;
   opacity: 0;
   pointer-events: none;
+}
+.https-warning {
+  display: grid;
+  gap: 3px;
+  max-width: 720px;
+  margin: 0 auto 14px;
+  padding: 12px 15px;
+  border: 1px solid rgba(174, 61, 46, .24);
+  border-radius: 14px;
+  color: #7f3026;
+  background: rgba(255, 122, 69, .09);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
 }
 .privacy-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 10; max-width: 360px; padding: 14px 18px; border-radius: 14px; color: white; background: var(--ink); box-shadow: var(--shadow); }

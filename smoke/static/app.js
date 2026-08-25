@@ -117,6 +117,17 @@ function recordingMimeType() {
   return candidates.find((type) => window.MediaRecorder?.isTypeSupported(type)) || "";
 }
 
+function directRecordingAvailable() {
+  return Boolean(window.isSecureContext && navigator.mediaDevices?.getUserMedia && window.MediaRecorder);
+}
+
+function updateRecordingAvailability() {
+  const available = directRecordingAvailable();
+  $("#recordButton").disabled = !available;
+  $("#recordButtonLabel").textContent = available ? "开始发言" : "需要 HTTPS";
+  $("#httpsWarning").classList.toggle("hidden", available);
+}
+
 async function startRecording() {
   state.mediaStream = await navigator.mediaDevices.getUserMedia({
     audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 },
@@ -232,21 +243,24 @@ $("#profileForm").addEventListener("submit", (event) => {
   $("#identityDirection").textContent = directionLabel(state.sourceLanguage);
   $("#profilePanel").classList.add("hidden");
   $("#sessionPanel").classList.remove("hidden");
+  updateRecordingAvailability();
   connectRoom();
 });
 
 $("#recordButton").addEventListener("click", async () => {
   try {
     if (state.recorder?.state === "recording") stopRecording();
-    else if (navigator.mediaDevices?.getUserMedia && window.MediaRecorder) await startRecording();
-    else {
-      $("#audioFileInput").value = "";
-      $("#recordStatus").textContent = "请使用手机录音器完成发言…";
-      $("#audioFileInput").click();
-    }
+    else if (directRecordingAvailable()) await startRecording();
+    else showToast("直接发言需要 HTTPS 地址，请改用上传录音文件");
   } catch (error) {
     showToast(error.message);
   }
+});
+
+$("#uploadAudioButton").addEventListener("click", () => {
+  $("#audioFileInput").value = "";
+  $("#recordStatus").textContent = "请选择已经录好的音频文件…";
+  $("#audioFileInput").click();
 });
 
 $("#audioFileInput").addEventListener("change", async (event) => {

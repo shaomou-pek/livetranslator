@@ -120,17 +120,24 @@
 
               <div class="composer">
                 <div id="recordStatus" class="record-status">准备就绪</div>
+                <div id="httpsWarning" class="https-warning hidden">
+                  <strong>直接发言需要 HTTPS</strong>
+                  <span>当前地址不能安全调用麦克风。请使用 HTTPS 测试地址，或使用“上传录音文件”。</span>
+                </div>
                 <div class="composer-actions">
                   <button id="recordButton" type="button" class="record-button">
                     <span class="record-symbol"></span>
                     <span id="recordButtonLabel">开始发言</span>
                   </button>
-                  <input id="audioFileInput" class="native-audio-input" type="file" accept="audio/*" capture />
+                  <input id="audioFileInput" class="native-audio-input" type="file" accept="audio/*" />
+                  <button id="uploadAudioButton" type="button" class="secondary-button demo-button">
+                    上传录音文件
+                  </button>
                   <button id="demoButton" type="button" class="secondary-button demo-button">
                     发送英文示例音频
                   </button>
                 </div>
-                <p class="privacy-note">微信或 HTTP 环境会自动使用手机原生录音器；音频仅用于本次模型调用。</p>
+                <p class="privacy-note">直接录音只在 HTTPS 或 localhost 可用；测试模式不持久化保存原始音频。</p>
               </div>
             </div>
           </div>
@@ -139,6 +146,6 @@
     </div>
 
     <div id="toast" class="toast hidden" role="status"></div>
-    <script src="/assets/app.js?v=3" defer></script>
+    <script src="/assets/app.js?v=4" defer></script>
   </body>
 </html>
