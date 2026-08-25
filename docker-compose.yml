@@ -196,8 +196,13 @@ services:
       LT_STT_PARTIAL_MODE: ${LT_STT_PARTIAL_MODE:-local}
       LT_STT_FINAL_MODE: ${LT_STT_FINAL_MODE:-openai_chunked}
       STT_OUTPUT_EVENTS: stt_events
+      MODEL_API_BASE_URL: ${MODEL_API_BASE_URL:-https://api.openai.com/v1}
+      MODEL_API_STT_URL: ${MODEL_API_STT_URL:-}
+      MODEL_API_KEY: ${MODEL_API_KEY:-}
+      STT_MODEL: ${STT_MODEL:-gpt-4o-mini-transcribe}
+      STT_RESPONSE_FORMAT: ${STT_RESPONSE_FORMAT:-json}
       # Multi-provider STT API keys
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_STT_MODEL: ${OPENAI_STT_MODEL:-whisper-1}
       DEEPGRAM_API_KEY: ${DEEPGRAM_API_KEY:-}
       DEEPGRAM_MODEL: ${DEEPGRAM_MODEL:-nova-3}
@@ -239,8 +244,13 @@ services:
       LT_DEFAULT_TGT: ${LT_DEFAULT_TGT:-en}
       LT_MT_BASE_URL: http://mt_worker:8081
       STT_EVENTS_CHANNEL: stt_events
+      MODEL_API_BASE_URL: ${MODEL_API_BASE_URL:-https://api.openai.com/v1}
+      MODEL_API_CHAT_URL: ${MODEL_API_CHAT_URL:-}
+      MODEL_API_KEY: ${MODEL_API_KEY:-}
+      TRANSLATION_MODEL: ${TRANSLATION_MODEL:-gpt-5.2}
+      TRANSLATION_REASONING_EFFORT: ${TRANSLATION_REASONING_EFFORT:-none}
       # Multi-provider MT API keys
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MT_MODEL: ${OPENAI_MT_MODEL:-gpt-4o-mini}
       DEEPL_API_KEY: ${DEEPL_API_KEY:-}
       GOOGLE_TRANSLATE_API_KEY: ${GOOGLE_TRANSLATE_API_KEY:-}

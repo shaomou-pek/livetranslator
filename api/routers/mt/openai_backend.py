@@ -1,39 +1,60 @@
 import os
 import httpx
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_MT_MODEL = os.getenv("OPENAI_MT_MODEL", "gpt-4o-mini")
 
-async def translate_text(text: str, src_lang: str, tgt_lang: str) -> dict:
-    """
-    Translate text using OpenAI GPT with optimized settings for Arabic
+LANGUAGE_NAMES = {
+    "en": "English",
+    "zh": "Chinese",
+    "zh-cn": "Chinese",
+    "zh-tw": "Traditional Chinese",
+}
 
-    Returns:
-        dict: {
-            "text": translated text,
-            "model": model name used (gpt-4o or gpt-4o-mini)
-        }
-    """
-    if not OPENAI_API_KEY:
-        raise Exception("OPENAI_API_KEY not set")
 
-    # Configure language names and translation approach
+def _api_endpoint() -> str:
+    direct_url = os.getenv("MODEL_API_CHAT_URL", "").strip()
+    if direct_url:
+        return direct_url
+
+    base_url = os.getenv(
+        "MODEL_API_BASE_URL", "https://api.openai.com/v1"
+    ).rstrip("/")
+    return f"{base_url}/chat/completions"
+
+
+def _api_key() -> str:
+    return os.getenv("MODEL_API_KEY") or os.getenv("OPENAI_API_KEY", "")
+
+
+def _model_name() -> str:
+    return (
+        os.getenv("TRANSLATION_MODEL")
+        or os.getenv("OPENAI_MT_MODEL")
+        or "gpt-5.2"
+    )
+
+
+def _language_name(language: str) -> str:
+    normalized = (language or "auto").lower()
+    return LANGUAGE_NAMES.get(normalized, language or "auto")
+
+
+def _build_translation_messages(text: str, src_lang: str, tgt_lang: str) -> list:
     translating_to_arabic = tgt_lang == "ar"
     translating_from_arabic = src_lang == "ar"
-    is_arabic_translation = translating_to_arabic or translating_from_arabic
 
-    # Use Egyptian Arabic dialect when working with Arabic
-    target_language = "Egyptian Arabic (colloquial/spoken dialect)" if translating_to_arabic else tgt_lang
-    source_language = "Egyptian Arabic (colloquial/spoken dialect)" if translating_from_arabic else src_lang
+    target_language = (
+        "Egyptian Arabic (colloquial/spoken dialect)"
+        if translating_to_arabic
+        else _language_name(tgt_lang)
+    )
+    source_language = (
+        "Egyptian Arabic (colloquial/spoken dialect)"
+        if translating_from_arabic
+        else _language_name(src_lang)
+    )
 
-    # Use gpt-4o-mini for all translations (including Arabic)
-    model = OPENAI_MT_MODEL
-
-    # Build messages with system prompt for Arabic translations
     messages = []
-
     if translating_to_arabic:
-        # System prompt for translating TO Egyptian Arabic
         messages.append({
             'role': 'system',
             'content': (
@@ -45,7 +66,6 @@ async def translate_text(text: str, src_lang: str, tgt_lang: str) -> dict:
             )
         })
     elif translating_from_arabic:
-        # System prompt for translating FROM Egyptian Arabic
         messages.append({
             'role': 'system',
             'content': (
@@ -56,29 +76,57 @@ async def translate_text(text: str, src_lang: str, tgt_lang: str) -> dict:
             )
         })
 
-    # Add user prompt
     messages.append({
         'role': 'user',
-        'content': f"Translate this {source_language} text to {target_language}:\n\n{text}"
+        'content': (
+            f"Translate this {source_language} text to {target_language}. "
+            "Preserve names, numbers, product terms, and conversational tone. "
+            f"Return only the translation:\n\n{text}"
+        )
     })
+    return messages
+
+
+async def translate_text(text: str, src_lang: str, tgt_lang: str) -> dict:
+    """
+    Translate text using OpenAI GPT with optimized settings for Arabic
+
+    Returns:
+        dict: {
+            "text": translated text,
+            "model": configured translation model name
+        }
+    """
+    api_key = _api_key()
+    if not api_key:
+        raise Exception("MODEL_API_KEY or OPENAI_API_KEY not set")
+
+    model = _model_name()
+    messages = _build_translation_messages(text, src_lang, tgt_lang)
 
     # Use optimized settings: temperature 0.1-0.2 for faithful output
     request_params = {
         'model': model,
         'messages': messages,
-        'temperature': 0.15,  # Low temperature for faithful, consistent translations
-        'max_tokens': 1000,  # Increased to handle longer segments
     }
 
-    # Add seed for reproducibility if using gpt-4o or gpt-4o-mini
+    if model.startswith("gpt-5"):
+        request_params['reasoning_effort'] = os.getenv(
+            "TRANSLATION_REASONING_EFFORT", "none"
+        )
+        request_params['max_completion_tokens'] = 1000
+    else:
+        request_params['temperature'] = 0.15
+        request_params['max_tokens'] = 1000
+
     if 'gpt-4o' in model:
         request_params['seed'] = 42
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
-            'https://api.openai.com/v1/chat/completions',
+            _api_endpoint(),
             headers={
-                'Authorization': f'Bearer {OPENAI_API_KEY}',
+                'Authorization': f'Bearer {api_key}',
                 'Content-Type': 'application/json'
             },
             json=request_params

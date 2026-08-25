@@ -1,0 +1,16 @@
+services:
+  livetranslator-smoke:
+    build:
+      context: .
+      dockerfile: smoke/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${SMOKE_PORT:-8765}:8765"
+    environment:
+      MODEL_API_BASE_URL: ${MODEL_API_BASE_URL:-https://llm.dhgateinternal.com/v1}
+      MODEL_API_KEY: ${MODEL_API_KEY:?MODEL_API_KEY must be set}
+      STT_MODEL: ${STT_MODEL:-gpt-4o-mini-transcribe}
+      STT_RESPONSE_FORMAT: ${STT_RESPONSE_FORMAT:-json}
+      TRANSLATION_MODEL: ${TRANSLATION_MODEL:-gpt-5.2}
+      TRANSLATION_REASONING_EFFORT: ${TRANSLATION_REASONING_EFFORT:-none}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8765}

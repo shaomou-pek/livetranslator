@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f2ea" />
+    <title>LiveTranslator Lab</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="LiveTranslator Lab 首页">
+          <span class="brand-mark">LT</span>
+          <span>
+            <strong>LiveTranslator</strong>
+            <small>local test lab</small>
+          </span>
+        </a>
+        <span class="lab-pill">LOCAL SMOKE TEST</span>
+      </header>
+
+      <main>
+        <section id="landingView" class="landing-grid hidden">
+          <div class="hero-copy">
+            <p class="eyebrow">BILINGUAL DISCUSSION ROOMS</p>
+            <h1>扫码加入，开口说话，双语内容同步出现。</h1>
+            <p class="hero-subtitle">
+              无需安装。创建一个临时房间，用第二个浏览器或手机加入，测试中文与英文的语音转写和翻译。
+            </p>
+            <div class="flow-strip" aria-label="测试流程">
+              <span>创建房间</span><i></i><span>扫码加入</span><i></i><span>点击发言</span><i></i><span>同步字幕</span>
+            </div>
+          </div>
+
+          <div class="action-card">
+            <form id="createRoomForm">
+              <label for="roomTitle">会议名称</label>
+              <input id="roomTitle" name="title" maxlength="80" value="中英双语讨论" required />
+              <button class="primary-button" type="submit">创建测试房间</button>
+            </form>
+            <div class="separator"><span>或</span></div>
+            <form id="joinCodeForm" class="join-form">
+              <label for="joinCode">输入房间码</label>
+              <div class="inline-input">
+                <input id="joinCode" maxlength="6" autocomplete="off" placeholder="A1B2C3" />
+                <button type="submit" class="secondary-button">加入</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section id="roomView" class="room-layout hidden">
+          <aside class="room-sidebar">
+            <div class="room-heading">
+              <p class="eyebrow">LIVE ROOM</p>
+              <h1 id="roomName">会议室</h1>
+              <div class="room-code-line">
+                <span>房间码</span>
+                <strong id="roomCode">------</strong>
+              </div>
+            </div>
+
+            <div class="qr-card">
+              <img id="roomQr" alt="加入会议室二维码" />
+              <p>用另一个浏览器扫码或打开加入链接</p>
+              <button id="copyLinkButton" class="text-button" type="button">复制加入链接</button>
+            </div>
+
+            <div class="connection-card">
+              <span id="connectionDot" class="status-dot"></span>
+              <div>
+                <strong id="connectionLabel">等待加入</strong>
+                <small><span id="onlineCount">0</span> 个页面在线</small>
+              </div>
+            </div>
+          </aside>
+
+          <div class="conversation-panel">
+            <div id="profilePanel" class="profile-panel">
+              <div>
+                <p class="eyebrow">JOIN THE ROOM</p>
+                <h2>先设置你的发言身份</h2>
+              </div>
+              <form id="profileForm" class="profile-form">
+                <label>
+                  昵称
+                  <input id="speakerName" value="Guest" maxlength="32" required />
+                </label>
+                <label>
+                  主要发言语言（系统会自动校正）
+                  <select id="speakerLanguage">
+                    <option value="zh">中文 → English</option>
+                    <option value="en">English → 中文</option>
+                  </select>
+                </label>
+                <button class="primary-button" type="submit">进入会议室</button>
+              </form>
+            </div>
+
+            <div id="sessionPanel" class="session-panel hidden">
+              <div class="conversation-header">
+                <div>
+                  <p class="eyebrow">LIVE TRANSCRIPT</p>
+                  <h2>双语会议记录</h2>
+                </div>
+                <div class="identity-chip">
+                  <span id="identityName">Guest</span>
+                  <small id="identityDirection">中文 → English</small>
+                </div>
+              </div>
+
+              <div id="messageList" class="message-list" aria-live="polite">
+                <div id="emptyState" class="empty-state">
+                  <div class="empty-icon">“ ”</div>
+                  <strong>还没有发言</strong>
+                  <p>点击下方按钮开始录音，停止后会自动生成原文和译文。</p>
+                </div>
+              </div>
+
+              <div class="composer">
+                <div id="recordStatus" class="record-status">准备就绪</div>
+                <div class="composer-actions">
+                  <button id="recordButton" type="button" class="record-button">
+                    <span class="record-symbol"></span>
+                    <span id="recordButtonLabel">开始发言</span>
+                  </button>
+                  <button id="demoButton" type="button" class="secondary-button demo-button">
+                    发送英文示例音频
+                  </button>
+                </div>
+                <p class="privacy-note">音频仅用于本次模型调用；测试模式不持久化保存录音。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

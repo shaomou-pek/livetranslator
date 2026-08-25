@@ -5,8 +5,35 @@ import wave
 import httpx
 from datetime import datetime
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_STT_MODEL = os.getenv("OPENAI_STT_MODEL", "whisper-1")
+
+def _api_endpoint() -> str:
+    direct_url = os.getenv("MODEL_API_STT_URL", "").strip()
+    if direct_url:
+        return direct_url
+
+    base_url = os.getenv(
+        "MODEL_API_BASE_URL", "https://api.openai.com/v1"
+    ).rstrip("/")
+    return f"{base_url}/audio/transcriptions"
+
+
+def _api_key() -> str:
+    return os.getenv("MODEL_API_KEY") or os.getenv("OPENAI_API_KEY", "")
+
+
+def _model_name() -> str:
+    return (
+        os.getenv("STT_MODEL")
+        or os.getenv("OPENAI_STT_MODEL")
+        or "gpt-4o-mini-transcribe"
+    )
+
+
+def _response_format() -> str:
+    configured = os.getenv("STT_RESPONSE_FORMAT", "").strip()
+    if configured:
+        return configured
+    return "verbose_json" if _model_name() == "whisper-1" else "json"
 
 def pcm16_to_wav(pcm16_base64: str, sample_rate=16000, channels=1) -> bytes:
     """Convert PCM16 base64 to WAV bytes"""
@@ -29,33 +56,48 @@ async def transcribe_audio_chunk(audio_base64: str, language: str = None, prompt
 
     prompt: Optional context from previous transcription to improve continuity
     """
-    if not OPENAI_API_KEY:
-        raise Exception("OPENAI_API_KEY not set")
-
-    # Convert PCM16 to WAV
     wav_bytes = pcm16_to_wav(audio_base64)
+    return await transcribe_audio_file(
+        wav_bytes,
+        filename="audio.wav",
+        content_type="audio/wav",
+        language=language,
+        prompt=prompt,
+    )
 
-    # Prepare multipart form data
+
+async def transcribe_audio_file(
+    audio: bytes,
+    *,
+    filename: str,
+    content_type: str,
+    language: str = None,
+    prompt: str = None,
+) -> dict:
+    """Transcribe a browser recording or an in-memory audio file."""
+    api_key = _api_key()
+    if not api_key:
+        raise Exception("MODEL_API_KEY or OPENAI_API_KEY not set")
+
     files = {
-        'file': ('audio.wav', wav_bytes, 'audio/wav'),
+        'file': (filename or 'audio.webm', audio, content_type or 'audio/webm'),
     }
 
     data = {
-        'model': OPENAI_STT_MODEL,
-        'response_format': 'verbose_json',  # Required to get detected language
+        'model': _model_name(),
+        'response_format': _response_format(),
     }
 
     if language and language != 'auto':
         data['language'] = language
 
     if prompt:
-        # Provide context from previous transcription (max 224 tokens)
         data['prompt'] = prompt[-224:]
     
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
-            'https://api.openai.com/v1/audio/transcriptions',
-            headers={'Authorization': f'Bearer {OPENAI_API_KEY}'},
+            _api_endpoint(),
+            headers={'Authorization': f'Bearer {api_key}'},
             files=files,
             data=data
         )
