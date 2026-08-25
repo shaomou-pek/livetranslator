@@ -118,9 +118,6 @@ function recordingMimeType() {
 }
 
 async function startRecording() {
-  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-    throw new Error("当前浏览器不支持麦克风录音");
-  }
   state.mediaStream = await navigator.mediaDevices.getUserMedia({
     audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 },
   });
@@ -154,11 +151,15 @@ async function uploadRecording() {
   const extension = mimeType.includes("mp4") ? "mp4" : "webm";
   const blob = new Blob(state.chunks, { type: mimeType });
   state.mediaStream?.getTracks().forEach((track) => track.stop());
+  await uploadAudio(blob, `speech.${extension}`);
+}
+
+async function uploadAudio(blob, filename) {
   const form = new FormData();
   form.append("participant_id", state.participantId);
   form.append("speaker_name", state.speakerName);
   form.append("source_language", state.sourceLanguage);
-  form.append("audio", blob, `speech.${extension}`);
+  form.append("audio", blob, filename);
   try {
     await api(`/api/rooms/${state.roomCode}/utterances`, { method: "POST", body: form });
     $("#recordStatus").textContent = "已同步到会议室";
@@ -237,10 +238,25 @@ $("#profileForm").addEventListener("submit", (event) => {
 $("#recordButton").addEventListener("click", async () => {
   try {
     if (state.recorder?.state === "recording") stopRecording();
-    else await startRecording();
+    else if (navigator.mediaDevices?.getUserMedia && window.MediaRecorder) await startRecording();
+    else {
+      $("#audioFileInput").value = "";
+      $("#recordStatus").textContent = "请使用手机录音器完成发言…";
+      $("#audioFileInput").click();
+    }
   } catch (error) {
     showToast(error.message);
   }
+});
+
+$("#audioFileInput").addEventListener("change", async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) {
+    $("#recordStatus").textContent = "准备就绪";
+    return;
+  }
+  $("#recordStatus").textContent = "正在上传、识别和翻译…";
+  await uploadAudio(file, file.name || "mobile-recording.m4a");
 });
 
 $("#demoButton").addEventListener("click", sendDemo);

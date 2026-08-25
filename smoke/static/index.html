@@ -125,11 +125,12 @@
                     <span class="record-symbol"></span>
                     <span id="recordButtonLabel">开始发言</span>
                   </button>
+                  <input id="audioFileInput" class="native-audio-input" type="file" accept="audio/*" capture />
                   <button id="demoButton" type="button" class="secondary-button demo-button">
                     发送英文示例音频
                   </button>
                 </div>
-                <p class="privacy-note">音频仅用于本次模型调用；测试模式不持久化保存录音。</p>
+                <p class="privacy-note">微信或 HTTP 环境会自动使用手机原生录音器；音频仅用于本次模型调用。</p>
               </div>
             </div>
           </div>
@@ -138,6 +139,6 @@
     </div>
 
     <div id="toast" class="toast hidden" role="status"></div>
-    <script src="/assets/app.js?v=2" defer></script>
+    <script src="/assets/app.js?v=3" defer></script>
   </body>
 </html>

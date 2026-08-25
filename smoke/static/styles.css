@@ -124,6 +124,13 @@ input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rg
 .record-symbol { display: inline-block; width: 10px; height: 10px; margin-right: 10px; border-radius: 50%; background: var(--orange); }
 .recording .record-symbol { border-radius: 2px; background: white; animation: pulse 1s infinite; }
 .demo-button { min-height: 48px; }
+.native-audio-input {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
 .privacy-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 10; max-width: 360px; padding: 14px 18px; border-radius: 14px; color: white; background: var(--ink); box-shadow: var(--shadow); }
 
